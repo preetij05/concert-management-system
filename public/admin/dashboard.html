@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Concert Management</title>
+  <style>
+    :root {
+      --primary: #3B5BA9;
+      --accent: #FFD447;
+      --light-bg: #F5F7FB;
+      --text-dark: #2C3E50;
+      --text-light: #ffffff;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    html, body {
+      height: 100%;
+      min-height: 100vh;
+      background: var(--light-bg);
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      height: 100vh;
+    }
+    header {
+      background: var(--primary);
+      color: var(--text-light);
+      padding: 20px 40px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    header h1 {
+      font-size: 2rem;
+    }
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 50px 20px 30px 20px;
+      align-content: flex-start;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+    .card {
+      background: white;
+      flex: 1 1 200px;
+      min-width: 220px;
+      height: 180px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text-dark);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+    .card h2 {
+      margin-bottom: 15px;
+      color: var(--primary);
+      font-size: 1.4rem;
+    }
+    .card p {
+      font-size: 1rem;
+      color: #555;
+    }
+    .dashboard-image-flex {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      width: 100%;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .dashboard-image-flex img {
+      width: 100vw;
+      height: 100%;
+      object-fit: cover;
+      border-top-left-radius: 30px;
+      border-top-right-radius: 30px;
+      filter: grayscale(100%);
+    }
+    @media (max-width: 800px) {
+      .dashboard {
+        flex-direction: column;
+        align-items: center;
+      }
+      .dashboard-image-flex img {
+        border-radius: 0;
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+      }
+      .dashboard-image-flex {
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Admin Dashboard</h1>
+  </header>
+  <div class="dashboard">
+    <a href="manage_concerts.html" class="card">
+      <h2>Manage Concerts</h2>
+      <p>Add, update, or delete concert information</p>
+    </a>
+    <a href="manage_artists.html" class="card">
+      <h2>Manage Artists</h2>
+      <p>Add, update, or delete artist profiles</p>
+    </a>
+    <a href="manage_customers.html" class="card">
+      <h2>Manage Customers</h2>
+      <p>View and manage customer accounts</p>
+    </a>
+    <a href="reports.html" class="card">
+      <h2>Reports</h2>
+      <p>View bookings, revenue, and concert statistics</p>
+    </a>
+  </div>
+  <div class="dashboard-image-flex">
+    <img src="../images/crowd.jpg" alt="Crowd at concert">
+  </div>
+</body>
+</html>

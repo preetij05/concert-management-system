@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f5f7fb; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+  .box { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 1px 6px rgba(0,0,0,0.1); width: 300px; }
+  h2 { color: #3B5BA9; margin-top: 0; }
+  input { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; }
+  button { width: 100%; padding: 10px; background: #3B5BA9; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+  button:hover { background: #FFD447; color: #2C3E50; }
+  .toggle { text-align: center; margin-top: 12px; font-size: 0.9em; }
+  .toggle a { color: #3B5BA9; cursor: pointer; }
+  .error { color: #c0392b; font-size: 0.9em; min-height: 18px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2 id="formTitle">Login</h2>
+  <form id="authForm">
+    <input type="text" id="attendee_name" placeholder="Full Name" style="display:none;">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <div class="error" id="errorMsg"></div>
+    <button type="submit" id="submitBtn">Login</button>
+  </form>
+  <div class="toggle">
+    <span id="toggleText">Don't have an account? <a id="toggleLink">Register</a></span>
+  </div>
+</div>
+
+<script>
+  let isLogin = true;
+
+  const form = document.getElementById('authForm');
+  const nameField = document.getElementById('attendee_name');
+  const formTitle = document.getElementById('formTitle');
+  const submitBtn = document.getElementById('submitBtn');
+  const toggleText = document.getElementById('toggleText');
+  const errorMsg = document.getElementById('errorMsg');
+
+  const renderToggleText = () => {
+    toggleText.innerHTML = isLogin
+      ? `Don't have an account? <a id="toggleLink">Register</a>`
+      : `Already have an account? <a id="toggleLink">Login</a>`;
+  };
+
+  const applyMode = () => {
+    nameField.style.display = isLogin ? 'none' : 'block';
+    nameField.required = !isLogin;
+    formTitle.textContent = isLogin ? 'Login' : 'Register';
+    submitBtn.textContent = isLogin ? 'Login' : 'Register';
+    renderToggleText();
+  };
+
+  // Event delegation: the listener is on the parent (toggleText),
+  // which never gets replaced, so it survives the inner link being re-rendered.
+  toggleText.addEventListener('click', e => {
+    if (e.target.id !== 'toggleLink') return;
+    isLogin = !isLogin;
+    errorMsg.textContent = '';
+    applyMode();
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    errorMsg.textContent = '';
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const endpoint = isLogin ? '/api/customer/login' : '/api/customer/register';
+    const body = isLogin
+      ? { email, password }
+      : { attendee_name: nameField.value, email, password };
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorMsg.textContent = data.error || 'Something went wrong.';
+        return;
+      }
+
+      window.location.href = 'browse.html';
+    } catch (err) {
+      errorMsg.textContent = 'Network error. Please try again.';
+    }
+  });
+
+  applyMode(); // set initial state cleanly instead of relying on hardcoded HTML
+</script>
+
+</body>
+</html>

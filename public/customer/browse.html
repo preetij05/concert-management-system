@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Concerts</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f6fb; color: #333; }
+    h2 { color: #3B5BA9; text-align: center; }
+    .concert {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 500px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .concert h3 { color: #3B5BA9; margin-bottom: 8px; }
+    .concert p { margin: 4px 0; }
+    .artists { font-style: italic; color: #555; }
+  </style>
+</head>
+<body>
+  <h2>Available Concerts</h2>
+  <div id="concert-list"></div>
+
+  <script>
+  const concertListDiv = document.getElementById('concert-list');
+
+  // ---------------- Require login ----------------
+  const checkLogin = async () => {
+    try {
+      const res = await fetch('/api/customer/me');
+      if (!res.ok) {
+        window.location.href = 'login.html';
+        return false;
+      }
+      return true;
+    } catch (err) {
+      window.location.href = 'login.html';
+      return false;
+    }
+  };
+
+  // ---------------- Helper: format date ----------------
+  const formatDate = dateStr => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  // ---------------- Fetch and display concerts ----------------
+  const fetchConcerts = async () => {
+    try {
+      const res = await fetch('/api/customer/concerts');
+      const concerts = await res.json();
+
+      concertListDiv.innerHTML = concerts.map(c => `
+        <div class="concert">
+          <h3>${c.concert_name}</h3>
+          <p><strong>Date:</strong> ${formatDate(c.concert_date)}</p>
+          <p><strong>Venue:</strong> ${c.venue}</p>
+          <p class="artists"><strong>Artists:</strong> ${c.artists || 'TBA'}</p>
+        </div>
+      `).join('');
+    } catch (error) {
+      console.error('Error fetching concerts:', error);
+      concertListDiv.innerHTML = "<p>Error loading concerts.</p>";
+    }
+  };
+
+  // ---------------- Initial load ----------------
+  (async () => {
+    const loggedIn = await checkLogin();
+    if (loggedIn) {
+      fetchConcerts();
+    }
+  })();
+</script>
+</body>
+</html>
